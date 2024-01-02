@@ -5,6 +5,7 @@ import com.crud.noticias.service.NoticiaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -55,4 +56,23 @@ public class NoticiaController {
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // Método sobrecargado para manejar solicitudes sin ID
+// Método sobrecargado para manejar solicitudes sin ID
+    @GetMapping({"/siguiente", "/siguiente/"})
+    public ResponseEntity<Noticia> obtenerPrimerNoticia() {
+        return noticiaService.obtenerPrimerRegistro()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Método original para manejar solicitudes con ID
+    @GetMapping("/siguiente/{id}")
+    public ResponseEntity<Noticia> obtenerSiguienteNoticia(@PathVariable Long id) {
+        return noticiaService.obtenerSiguienteRegistro(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> obtenerPrimerNoticia());
+    }
+
+
 }
